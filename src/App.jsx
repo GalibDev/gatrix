@@ -218,7 +218,7 @@ const members = [
   },
   {
     id: 4,
-    name: "IMTEAS AHAMMED",
+    name: "IMTIES AHAMMED",
     role: "Designer",
     image: member4,
     bio: "Designs interface, visuals, and project presentation.",
