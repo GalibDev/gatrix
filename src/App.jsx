@@ -11,13 +11,25 @@ import Footer from "./components/Footer";
 
 import logo from "./assets/logo.png";
 import member1 from "./assets/member1.jpeg";
-import heroImage from "./assets/hero.png";
+import member2 from "./assets/member2.jpeg";
+import member3 from "./assets/member3.jpeg";
+import member4 from "./assets/member4.jpeg";
+import member5 from "./assets/member5.jpeg";
+import member6 from "./assets/member6.jpeg";
+
+import group1 from "./assets/group1.jpeg";
+import group2 from "./assets/group2.jpeg";
+import group3 from "./assets/group3.jpeg";
+
 import gallery1 from "./assets/gallery1.jpg";
 import gallery2 from "./assets/gallery2.jpg";
 import gallery3 from "./assets/gallery3.jpg";
 import gallery4 from "./assets/gallery4.jpg";
 import gallery5 from "./assets/gallery5.jpg";
 import gallery6 from "./assets/gallery6.jpg";
+
+const heroImages = [group1, group2, group3];
+
 const content = {
   en: {
     nav: {
@@ -25,16 +37,9 @@ const content = {
       about: "About",
       team: "Team",
       projects: "Projects",
+      gallery: "Gallery",
+      achievements: "Achievements",
       contact: "Contact",
-
-search: "Search projects...",
-viewDetails: "View Details",
-noResults: "No projects found.",
-techTitle: "Technologies",
-teamTitle: "Team Members",
-
-
-
     },
     hero: {
       title: "Welcome to GATRIX",
@@ -68,6 +73,11 @@ teamTitle: "Team Members",
       close: "Close",
       details:
         "This project is part of the GATRIX robotics portfolio. You can add full description, used technology, images, and demo links here.",
+      search: "Search projects...",
+      viewDetails: "View Details",
+      noResults: "No projects found.",
+      techTitle: "Technologies",
+      teamTitle: "Team Members",
     },
     gallery: {
       title: "Gallery",
@@ -85,8 +95,7 @@ teamTitle: "Team Members",
       message: "Your Message",
       send: "Send Message",
       success: "Message sent successfully.",
-emailPlaceholder: "Your Email",
-
+      emailPlaceholder: "Your Email",
     },
     footer: {
       text: "GATRIX Robotics Team. Building the future with innovation.",
@@ -99,19 +108,16 @@ emailPlaceholder: "Your Email",
       awards: "Awards",
     },
   },
+
   bn: {
     nav: {
       home: "হোম",
       about: "আমাদের সম্পর্কে",
       team: "দল",
       projects: "প্রজেক্ট",
+      gallery: "গ্যালারি",
+      achievements: "অর্জন",
       contact: "যোগাযোগ",
-search: "প্রজেক্ট খুঁজুন...",
-viewDetails: "বিস্তারিত দেখুন",
-noResults: "কোনো প্রজেক্ট পাওয়া যায়নি।",
-techTitle: "ব্যবহৃত প্রযুক্তি",
-teamTitle: "দলের সদস্যরা",
-
     },
     hero: {
       title: "GATRIX-এ স্বাগতম",
@@ -145,6 +151,11 @@ teamTitle: "দলের সদস্যরা",
       close: "বন্ধ করুন",
       details:
         "এই প্রজেক্টটি GATRIX রোবোটিক্স পোর্টফোলিওর অংশ। এখানে পূর্ণ বিবরণ, ব্যবহৃত প্রযুক্তি, ছবি এবং ডেমো লিংক যোগ করতে পারবে।",
+      search: "প্রজেক্ট খুঁজুন...",
+      viewDetails: "বিস্তারিত দেখুন",
+      noResults: "কোনো প্রজেক্ট পাওয়া যায়নি।",
+      techTitle: "ব্যবহৃত প্রযুক্তি",
+      teamTitle: "দলের সদস্যরা",
     },
     gallery: {
       title: "গ্যালারি",
@@ -180,57 +191,57 @@ teamTitle: "দলের সদস্যরা",
 const members = [
   {
     id: 1,
-    name: "Member 1",
+    name: "MD MIRZA GALIB",
     role: "Team Lead",
     image: member1,
     bio: "Leads the team and coordinates robotics projects.",
     skills: ["Leadership", "Robotics", "Planning"],
-    email: "member1@gatrix.com",
+    email: "mirza.galib.palash@gmail.com",
   },
   {
     id: 2,
-    name: "Member 2",
+    name: "MD. ROMJAN KAZI",
     role: "Programmer",
-    image: member1,
+    image: member2,
     bio: "Works on coding, logic, and automation systems.",
     skills: ["JavaScript", "Arduino", "Problem Solving"],
-    email: "member2@gatrix.com",
+    email: "romjankazi533@gmail.com",
   },
   {
     id: 3,
-    name: "Member 3",
+    name: "MD MAHBUBUL ALAM",
     role: "Hardware",
-    image: member1,
+    image: member3,
     bio: "Builds hardware structures and manages components.",
     skills: ["Sensors", "Circuits", "Hardware Design"],
-    email: "member3@gatrix.com",
+    email: "mahbubul.rifat5@gmail.com",
   },
   {
     id: 4,
-    name: "Member 4",
+    name: "IMTEAS AHAMMED",
     role: "Designer",
-    image: member1,
+    image: member4,
     bio: "Designs interface, visuals, and project presentation.",
     skills: ["UI Design", "Branding", "Creativity"],
     email: "member4@gatrix.com",
   },
   {
     id: 5,
-    name: "Member 5",
+    name: "TANJILA KHANAM TAMIM",
     role: "Electronics",
-    image: member1,
+    image: member5,
     bio: "Handles connections, boards, and electronic systems.",
     skills: ["Electronics", "PCB", "Wiring"],
     email: "member5@gatrix.com",
   },
   {
     id: 6,
-    name: "Member 6",
+    name: "AFIA HUMAYRA",
     role: "Research",
-    image: member1,
+    image: member6,
     bio: "Researches new ideas, components, and project concepts.",
     skills: ["Research", "Documentation", "Innovation"],
-    email: "member6@gatrix.com",
+    email: "learningafia969@gmail.com",
   },
 ];
 
@@ -239,7 +250,7 @@ const projectsData = [
     id: 1,
     title: "Line Follower Robot",
     category: "robotics",
-    image: heroImage,
+    image: group1,
     shortDescription: "A robot that detects and follows a line automatically.",
     fullDescription:
       "This robot uses sensors to detect a marked line and move accordingly. It was designed as a foundational robotics project for learning control, sensors, and movement logic.",
@@ -253,7 +264,7 @@ const projectsData = [
     id: 2,
     title: "Obstacle Avoiding Robot",
     category: "robotics",
-    image: heroImage,
+    image: group2,
     shortDescription: "A smart bot that detects obstacles and changes direction.",
     fullDescription:
       "This project uses ultrasonic sensors to detect nearby obstacles and navigate around them. It focuses on autonomous movement and real-world robotics behavior.",
@@ -267,7 +278,7 @@ const projectsData = [
     id: 3,
     title: "Smart Home System",
     category: "iot",
-    image: heroImage,
+    image: group3,
     shortDescription: "An IoT system for controlling home devices remotely.",
     fullDescription:
       "This smart home project connects appliances and control systems using IoT concepts. It enables switching and automation through connected hardware and software.",
@@ -281,7 +292,7 @@ const projectsData = [
     id: 4,
     title: "Automatic Gate Control",
     category: "automation",
-    image: heroImage,
+    image: group1,
     shortDescription: "An automated gate prototype with access logic.",
     fullDescription:
       "This project focuses on automated gate opening and closing through sensors and microcontroller logic. It can be extended into a real access-control system.",
@@ -292,7 +303,6 @@ const projectsData = [
     demo: "https://youtube.com/",
   },
 ];
-
 
 const galleryImages = [
   {
@@ -326,9 +336,6 @@ const galleryImages = [
     src: gallery6,
   },
 ];
-
-
-
 
 const achievementsData = [
   {
@@ -471,7 +478,7 @@ export default function App() {
         activeSection={activeSection}
       />
 
-      <Hero hero={t.hero} theme={theme} heroImage={heroImage} />
+      <Hero hero={t.hero} theme={theme} heroImages={heroImages} />
       <About about={t.about} theme={theme} />
 
       <section className="px-4 py-10 sm:px-6">

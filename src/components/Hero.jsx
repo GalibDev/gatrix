@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 
-export default function Hero({ hero, theme, heroImage }) {
+export default function Hero({ hero, theme, heroImages }) {
   const [text, setText] = useState("");
   const [index, setIndex] = useState(0);
+  const [currentImage, setCurrentImage] = useState(0);
 
   useEffect(() => {
     let i = 0;
@@ -20,6 +21,26 @@ export default function Hero({ hero, theme, heroImage }) {
 
     return () => clearInterval(interval);
   }, [index, hero.typing]);
+
+  useEffect(() => {
+    if (!heroImages || heroImages.length === 0) return;
+
+    const imageInterval = setInterval(() => {
+      setCurrentImage((prev) => (prev + 1) % heroImages.length);
+    }, 5000);
+
+    return () => clearInterval(imageInterval);
+  }, [heroImages]);
+
+  const prevSlide = () => {
+    setCurrentImage((prev) =>
+      prev === 0 ? heroImages.length - 1 : prev - 1
+    );
+  };
+
+  const nextSlide = () => {
+    setCurrentImage((prev) => (prev + 1) % heroImages.length);
+  };
 
   return (
     <section
@@ -74,13 +95,75 @@ export default function Hero({ hero, theme, heroImage }) {
         </div>
 
         <div className="flex justify-center">
-          <img
-            src={heroImage}
-            alt="GATRIX Hero"
-            className="w-full max-w-[280px] rounded-3xl border border-cyan-500/20 object-cover shadow-2xl sm:max-w-sm"
-          />
+          <div className="relative w-full max-w-[320px] sm:max-w-sm md:max-w-md">
+            <div className="absolute -inset-2 rounded-[2rem] bg-cyan-500/20 blur-2xl"></div>
+            <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-purple-500/20 blur-3xl"></div>
+
+            <div className="relative overflow-hidden rounded-[2rem] border border-cyan-500/20 bg-white/5 shadow-[0_0_30px_rgba(34,211,238,0.18)] backdrop-blur-md">
+              <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-purple-500/10"></div>
+
+              {heroImages.map((img, imgIndex) => (
+                <img
+                  key={imgIndex}
+                  src={img}
+                  alt={`GATRIX Group ${imgIndex + 1}`}
+                  className={`absolute inset-0 h-full w-full object-cover object-top transition-all duration-1000 ${
+                    imgIndex === currentImage
+                      ? "translate-y-0 scale-100 opacity-100"
+                      : "translate-y-1 scale-105 opacity-0"
+                  }`}
+                />
+              ))}
+
+              <div className="relative aspect-[4/5] w-full animate-[float_5s_ease-in-out_infinite]"></div>
+
+              <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent"></div>
+
+              <div className="absolute bottom-4 left-4 rounded-full border border-cyan-400/30 bg-slate-950/70 px-4 py-2 text-xs text-cyan-300 backdrop-blur-md sm:text-sm">
+                GATRIX Team
+              </div>
+
+              <button
+                onClick={prevSlide}
+                className="absolute left-3 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-cyan-400/30 bg-slate-950/60 text-white backdrop-blur-md transition hover:bg-cyan-500 hover:text-black hover:shadow-[0_0_15px_#22d3ee]"
+                aria-label="Previous slide"
+              >
+                ‹
+              </button>
+
+              <button
+                onClick={nextSlide}
+                className="absolute right-3 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-cyan-400/30 bg-slate-950/60 text-white backdrop-blur-md transition hover:bg-cyan-500 hover:text-black hover:shadow-[0_0_15px_#22d3ee]"
+                aria-label="Next slide"
+              >
+                ›
+              </button>
+
+              <div className="absolute bottom-4 right-4 flex gap-2">
+                {heroImages.map((_, dotIndex) => (
+                  <button
+                    key={dotIndex}
+                    onClick={() => setCurrentImage(dotIndex)}
+                    className={`h-2.5 w-2.5 rounded-full transition ${
+                      dotIndex === currentImage
+                        ? "bg-cyan-400 shadow-[0_0_10px_#22d3ee]"
+                        : "bg-white/40"
+                    }`}
+                    aria-label={`Go to slide ${dotIndex + 1}`}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+
+      <style>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-8px); }
+        }
+      `}</style>
     </section>
   );
 }
