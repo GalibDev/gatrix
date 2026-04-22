@@ -1,0 +1,86 @@
+import { useEffect, useState } from "react";
+
+export default function Hero({ hero, theme, heroImage }) {
+  const [text, setText] = useState("");
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    let i = 0;
+    const current = hero.typing[index];
+    const interval = setInterval(() => {
+      setText(current.slice(0, i));
+      i++;
+      if (i > current.length) {
+        clearInterval(interval);
+        setTimeout(() => {
+          setIndex((prev) => (prev + 1) % hero.typing.length);
+        }, 1200);
+      }
+    }, 50);
+
+    return () => clearInterval(interval);
+  }, [index, hero.typing]);
+
+  return (
+    <section
+      id="home"
+      className="relative flex min-h-[100svh] items-center justify-center overflow-hidden px-4 sm:px-6"
+    >
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute left-4 top-16 h-40 w-40 rounded-full bg-cyan-500/20 blur-3xl sm:left-10 sm:top-20 sm:h-72 sm:w-72"></div>
+        <div className="absolute right-4 top-24 h-40 w-40 rounded-full bg-purple-500/20 blur-3xl sm:right-10 sm:top-32 sm:h-72 sm:w-72"></div>
+        <div className="absolute bottom-10 left-1/3 h-32 w-32 rounded-full bg-blue-500/20 blur-3xl sm:h-56 sm:w-56"></div>
+
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(34,211,238,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(34,211,238,0.08)_1px,transparent_1px)] bg-[size:40px_40px] sm:bg-[size:60px_60px]"></div>
+      </div>
+
+      <div className="relative z-10 mx-auto grid max-w-6xl items-center gap-10 md:grid-cols-2">
+        <div className="text-center md:text-left">
+          <p className="mb-4 inline-block rounded-full border border-cyan-400/30 px-3 py-2 text-xs text-cyan-400 sm:px-4 sm:text-sm">
+            {hero.badge}
+          </p>
+
+          <h1 className="mb-5 text-3xl font-extrabold leading-tight sm:text-5xl md:text-7xl">
+            {hero.title}
+          </h1>
+
+          <p className="mb-3 min-h-[48px] text-base font-medium text-cyan-400 sm:min-h-[40px] sm:text-lg md:text-2xl">
+            {text}
+          </p>
+
+          <p
+            className={`mx-auto mb-8 max-w-2xl text-sm leading-7 sm:text-base md:mx-0 md:text-lg ${
+              theme === "dark" ? "text-slate-300" : "text-slate-700"
+            }`}
+          >
+            {hero.subtitle}
+          </p>
+
+          <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center md:justify-start">
+            <a
+              href="#projects"
+              className="inline-block w-full rounded-xl bg-cyan-500 px-6 py-3 text-center font-semibold text-black transition hover:scale-105 hover:shadow-[0_0_20px_#22d3ee] sm:w-auto"
+            >
+              {hero.btn}
+            </a>
+
+            <a
+              href="#team"
+              className="inline-block w-full rounded-xl border border-cyan-500/30 px-6 py-3 text-center font-semibold transition hover:bg-cyan-500/10 sm:w-auto"
+            >
+              Meet Team
+            </a>
+          </div>
+        </div>
+
+        <div className="flex justify-center">
+          <img
+            src={heroImage}
+            alt="GATRIX Hero"
+            className="w-full max-w-[280px] rounded-3xl border border-cyan-500/20 object-cover shadow-2xl sm:max-w-sm"
+          />
+        </div>
+      </div>
+    </section>
+  );
+}
