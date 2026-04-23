@@ -8,6 +8,7 @@ import Gallery from "./components/Gallery";
 import Achievements from "./components/Achievements";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
+import Loader from "./components/Loader";
 
 import logo from "./assets/logo.png";
 import member1 from "./assets/member1.jpeg";
@@ -305,36 +306,12 @@ const projectsData = [
 ];
 
 const galleryImages = [
-  {
-    id: 1,
-    title: "Team Session",
-    src: gallery1,
-  },
-  {
-    id: 2,
-    title: "Robot Build",
-    src: gallery2,
-  },
-  {
-    id: 3,
-    title: "Workshop Day",
-    src: gallery3,
-  },
-  {
-    id: 4,
-    title: "Testing Phase",
-    src: gallery4,
-  },
-  {
-    id: 5,
-    title: "Project Showcase",
-    src: gallery5,
-  },
-  {
-    id: 6,
-    title: "Competition Preparation",
-    src: gallery6,
-  },
+  { id: 1, title: "Team Session", src: gallery1 },
+  { id: 2, title: "Robot Build", src: gallery2 },
+  { id: 3, title: "Workshop Day", src: gallery3 },
+  { id: 4, title: "Testing Phase", src: gallery4 },
+  { id: 5, title: "Project Showcase", src: gallery5 },
+  { id: 6, title: "Competition Preparation", src: gallery6 },
 ];
 
 const achievementsData = [
@@ -407,6 +384,7 @@ export default function App() {
   const [language, setLanguage] = useState("en");
   const [filter, setFilter] = useState("all");
   const [activeSection, setActiveSection] = useState("home");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
@@ -452,6 +430,18 @@ export default function App() {
 
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 2800);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading) {
+    return <Loader />;
+  }
 
   const t = content[language];
 
