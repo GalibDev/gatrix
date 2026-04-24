@@ -1,16 +1,25 @@
 import { useEffect, useState } from "react";
 
-export default function Hero({ hero, theme, heroImages }) {
+export default function Hero({
+  hero,
+  theme,
+  heroImages = [],
+  slideInterval = 5000,
+  showArrows = true,
+}) {
   const [text, setText] = useState("");
   const [index, setIndex] = useState(0);
   const [currentImage, setCurrentImage] = useState(0);
+  const [touchStart, setTouchStart] = useState(null);
 
   useEffect(() => {
     let i = 0;
     const current = hero.typing[index];
+
     const interval = setInterval(() => {
       setText(current.slice(0, i));
       i++;
+
       if (i > current.length) {
         clearInterval(interval);
         setTimeout(() => {
@@ -23,24 +32,40 @@ export default function Hero({ hero, theme, heroImages }) {
   }, [index, hero.typing]);
 
   useEffect(() => {
-    if (!heroImages || heroImages.length === 0) return;
+    if (!heroImages || heroImages.length <= 1) return;
 
     const imageInterval = setInterval(() => {
       setCurrentImage((prev) => (prev + 1) % heroImages.length);
-    }, 5000);
+    }, Number(slideInterval) || 5000);
 
     return () => clearInterval(imageInterval);
-  }, [heroImages]);
+  }, [heroImages, slideInterval]);
 
-  const prevSlide = () => {
-    setCurrentImage((prev) =>
-      prev === 0 ? heroImages.length - 1 : prev - 1
-    );
-  };
+  function prevSlide() {
+    if (!heroImages.length) return;
+    setCurrentImage((prev) => (prev === 0 ? heroImages.length - 1 : prev - 1));
+  }
 
-  const nextSlide = () => {
+  function nextSlide() {
+    if (!heroImages.length) return;
     setCurrentImage((prev) => (prev + 1) % heroImages.length);
-  };
+  }
+
+  function handleTouchStart(e) {
+    setTouchStart(e.touches[0].clientX);
+  }
+
+  function handleTouchEnd(e) {
+    if (touchStart === null) return;
+
+    const touchEnd = e.changedTouches[0].clientX;
+    const diff = touchStart - touchEnd;
+
+    if (diff > 50) nextSlide();
+    if (diff < -50) prevSlide();
+
+    setTouchStart(null);
+  }
 
   return (
     <section
@@ -51,7 +76,6 @@ export default function Hero({ hero, theme, heroImages }) {
         <div className="absolute left-4 top-16 h-40 w-40 rounded-full bg-cyan-500/20 blur-3xl sm:left-10 sm:top-20 sm:h-72 sm:w-72"></div>
         <div className="absolute right-4 top-24 h-40 w-40 rounded-full bg-purple-500/20 blur-3xl sm:right-10 sm:top-32 sm:h-72 sm:w-72"></div>
         <div className="absolute bottom-10 left-1/3 h-32 w-32 rounded-full bg-blue-500/20 blur-3xl sm:h-56 sm:w-56"></div>
-
         <div className="absolute inset-0 bg-[linear-gradient(rgba(34,211,238,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(34,211,238,0.08)_1px,transparent_1px)] bg-[size:40px_40px] sm:bg-[size:60px_60px]"></div>
       </div>
 
@@ -99,7 +123,11 @@ export default function Hero({ hero, theme, heroImages }) {
             <div className="absolute -inset-2 rounded-[2rem] bg-cyan-500/20 blur-2xl"></div>
             <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-purple-500/20 blur-3xl"></div>
 
-            <div className="relative overflow-hidden rounded-[2rem] border border-cyan-500/20 bg-white/5 shadow-[0_0_30px_rgba(34,211,238,0.18)] backdrop-blur-md">
+            <div
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+              className="relative overflow-hidden rounded-[2rem] border border-cyan-500/20 bg-white/5 shadow-[0_0_30px_rgba(34,211,238,0.18)] backdrop-blur-md"
+            >
               <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-purple-500/10"></div>
 
               {heroImages.map((img, imgIndex) => (
@@ -123,21 +151,25 @@ export default function Hero({ hero, theme, heroImages }) {
                 GATRIX Team
               </div>
 
-              <button
-                onClick={prevSlide}
-                className="absolute left-3 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-cyan-400/30 bg-slate-950/60 text-white backdrop-blur-md transition hover:bg-cyan-500 hover:text-black hover:shadow-[0_0_15px_#22d3ee]"
-                aria-label="Previous slide"
-              >
-                ‹
-              </button>
+              {showArrows && heroImages.length > 1 && (
+                <>
+                  <button
+                    onClick={prevSlide}
+                    className="absolute left-3 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-cyan-400/30 bg-slate-950/60 text-white backdrop-blur-md transition hover:bg-cyan-500 hover:text-black hover:shadow-[0_0_15px_#22d3ee]"
+                    aria-label="Previous slide"
+                  >
+                    ‹
+                  </button>
 
-              <button
-                onClick={nextSlide}
-                className="absolute right-3 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-cyan-400/30 bg-slate-950/60 text-white backdrop-blur-md transition hover:bg-cyan-500 hover:text-black hover:shadow-[0_0_15px_#22d3ee]"
-                aria-label="Next slide"
-              >
-                ›
-              </button>
+                  <button
+                    onClick={nextSlide}
+                    className="absolute right-3 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-cyan-400/30 bg-slate-950/60 text-white backdrop-blur-md transition hover:bg-cyan-500 hover:text-black hover:shadow-[0_0_15px_#22d3ee]"
+                    aria-label="Next slide"
+                  >
+                    ›
+                  </button>
+                </>
+              )}
 
               <div className="absolute bottom-4 right-4 flex gap-2">
                 {heroImages.map((_, dotIndex) => (

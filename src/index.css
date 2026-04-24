@@ -16,3 +16,9 @@ h3,
 .logo-font {
   font-family: "Orbitron", "Hind Siliguri", sans-serif;
 }
+
+html,
+body,
+#root {
+  background-color: #020617;
+}

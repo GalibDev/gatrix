@@ -14,7 +14,7 @@ export default function Loader() {
         clearInterval(progressTimer);
         setTimeout(() => {
           setFadeOut(true);
-        }, 250);
+        }, 100);
       }
       setProgress(current);
     }, 120);
@@ -24,7 +24,7 @@ export default function Loader() {
 
   return (
     <div
-      className={`fixed inset-0 z-[9999] flex items-center justify-center bg-slate-950 transition-opacity duration-700 ${
+      className={`fixed inset-0 z-[9999] flex items-center justify-center bg-slate-950 transition-opacity duration-300 ${
         fadeOut ? "opacity-0" : "opacity-100"
       }`}
     >

@@ -41,4 +41,10 @@ export default function Footer({ footer, theme }) {
       </div>
     </footer>
   );
+
+
+
+
+
+
 }

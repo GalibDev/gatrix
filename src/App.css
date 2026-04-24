@@ -182,3 +182,49 @@
     border-right-color: var(--border);
   }
 }
+.input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  background: #020617;
+  border: 1px solid rgba(34, 211, 238, 0.2);
+  color: white;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  background: #020617;
+  border: 1px solid rgba(34, 211, 238, 0.2);
+  color: white;
+}
+
+.btn-yellow {
+  background: #facc15;
+  padding: 8px 16px;
+  border-radius: 8px;
+  color: black;
+  font-weight: bold;
+}
+
+.btn-red {
+  background: #ef4444;
+  padding: 8px 16px;
+  border-radius: 8px;
+  color: white;
+  font-weight: bold;
+}

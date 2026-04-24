@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 export default function Navbar({
   nav,
@@ -29,9 +30,16 @@ export default function Navbar({
       }`}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6">
-        <a href="#home" className="flex items-center gap-2 sm:gap-3">
-          <img src={logo} alt="GATRIX Logo" className="h-10 w-10 object-contain sm:h-12 sm:w-12" />
-          <span className="logo-font text-xl font-bold text-cyan-400 sm:text-2xl">
+        <a href="#home" className="flex items-center gap-3">
+          <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-xl border border-cyan-500/30 bg-slate-950 sm:h-16 sm:w-16">
+            <img
+              src={logo}
+              alt="GATRIX Logo"
+              className="h-full w-full object-contain"
+            />
+          </div>
+
+          <span className="logo-font text-xl font-bold text-cyan-400 sm:text-3xl">
             GATRIX
           </span>
         </a>
@@ -44,6 +52,13 @@ export default function Navbar({
           <a href="#gallery" className={navItemClass("gallery")}>{nav.gallery}</a>
           <a href="#achievements" className={navItemClass("achievements")}>{nav.achievements}</a>
           <a href="#contact" className={navItemClass("contact")}>{nav.contact}</a>
+
+          <Link
+            to="/admin/login"
+            className="ml-2 rounded-full border border-cyan-500/40 px-4 py-2 text-sm font-semibold text-cyan-400 transition hover:bg-cyan-400 hover:text-black"
+          >
+            Admin
+          </Link>
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
@@ -60,6 +75,7 @@ export default function Navbar({
             >
               EN
             </button>
+
             <button
               onClick={() => setLanguage("bn")}
               className={`rounded-full px-3 py-1 text-sm ${
@@ -96,13 +112,21 @@ export default function Navbar({
             theme === "dark" ? "bg-slate-950/95" : "bg-white/95"
           }`}
         >
-          <a href="#home" className="block rounded-lg px-2 py-2 hover:bg-cyan-500/10">{nav.home}</a>
-          <a href="#about" className="block rounded-lg px-2 py-2 hover:bg-cyan-500/10">{nav.about}</a>
-          <a href="#team" className="block rounded-lg px-2 py-2 hover:bg-cyan-500/10">{nav.team}</a>
-          <a href="#projects" className="block rounded-lg px-2 py-2 hover:bg-cyan-500/10">{nav.projects}</a>
-          <a href="#gallery" className="block rounded-lg px-2 py-2 hover:bg-cyan-500/10">{nav.gallery}</a>
-          <a href="#achievements" className="block rounded-lg px-2 py-2 hover:bg-cyan-500/10">{nav.achievements}</a>
-          <a href="#contact" className="block rounded-lg px-2 py-2 hover:bg-cyan-500/10">{nav.contact}</a>
+          <a href="#home" onClick={() => setOpen(false)} className="block rounded-lg px-2 py-2 hover:bg-cyan-500/10">{nav.home}</a>
+          <a href="#about" onClick={() => setOpen(false)} className="block rounded-lg px-2 py-2 hover:bg-cyan-500/10">{nav.about}</a>
+          <a href="#team" onClick={() => setOpen(false)} className="block rounded-lg px-2 py-2 hover:bg-cyan-500/10">{nav.team}</a>
+          <a href="#projects" onClick={() => setOpen(false)} className="block rounded-lg px-2 py-2 hover:bg-cyan-500/10">{nav.projects}</a>
+          <a href="#gallery" onClick={() => setOpen(false)} className="block rounded-lg px-2 py-2 hover:bg-cyan-500/10">{nav.gallery}</a>
+          <a href="#achievements" onClick={() => setOpen(false)} className="block rounded-lg px-2 py-2 hover:bg-cyan-500/10">{nav.achievements}</a>
+          <a href="#contact" onClick={() => setOpen(false)} className="block rounded-lg px-2 py-2 hover:bg-cyan-500/10">{nav.contact}</a>
+
+          <Link
+            to="/admin/login"
+            onClick={() => setOpen(false)}
+            className="block rounded-lg border border-cyan-500/30 px-3 py-2 text-cyan-400 hover:bg-cyan-500/10"
+          >
+            Admin Login
+          </Link>
 
           <div className="flex gap-2 pt-2">
             <button

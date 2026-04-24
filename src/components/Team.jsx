@@ -1,7 +1,39 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { supabase } from "../lib/supabase";
 
-export default function Team({ title, roleLabel, members, theme, teamText }) {
+export default function Team({ title, roleLabel, members = [], theme, teamText }) {
   const [selectedMember, setSelectedMember] = useState(null);
+  const [liveMembers, setLiveMembers] = useState([]);
+
+  useEffect(() => {
+    async function fetchMembers() {
+      const { data, error } = await supabase
+        .from("team_members")
+        .select("*")
+        .order("sort_order", { ascending: true });
+
+      if (error) {
+        console.error(error.message);
+        return;
+      }
+
+      const formattedMembers = (data || []).map((member) => ({
+        id: member.id,
+        name: member.name,
+        role: member.role,
+        image: member.image_url,
+        bio: member.bio,
+        skills: Array.isArray(member.skills) ? member.skills : [],
+        email: member.email,
+      }));
+
+      setLiveMembers(formattedMembers);
+    }
+
+    fetchMembers();
+  }, []);
+
+  const displayMembers = liveMembers.length > 0 ? liveMembers : members;
 
   return (
     <section id="team" className="px-4 py-20 sm:px-6">
@@ -9,7 +41,7 @@ export default function Team({ title, roleLabel, members, theme, teamText }) {
         <h2 className="mb-10 text-3xl font-bold text-cyan-400">{title}</h2>
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {members.map((member) => (
+          {displayMembers.map((member) => (
             <div
               key={member.id}
               className={`group relative overflow-hidden rounded-3xl border p-5 transition duration-300 hover:-translate-y-3 hover:shadow-[0_0_30px_#22d3ee] sm:p-6 ${
@@ -25,11 +57,17 @@ export default function Team({ title, roleLabel, members, theme, teamText }) {
 
               <div className="relative z-10">
                 <div className="overflow-hidden rounded-full">
-                  <img
-                    src={member.image}
-                    alt={member.name}
-                    className="mb-4 h-24 w-24 rounded-full border border-cyan-500/30 object-cover transition duration-300 group-hover:scale-110 sm:h-28 sm:w-28"
-                  />
+                  {member.image ? (
+                    <img
+                      src={member.image}
+                      alt={member.name}
+                      className="mb-4 h-24 w-24 rounded-full border border-cyan-500/30 object-cover transition duration-300 group-hover:scale-110 sm:h-28 sm:w-28"
+                    />
+                  ) : (
+                    <div className="mb-4 flex h-24 w-24 items-center justify-center rounded-full border border-cyan-500/30 bg-slate-800 text-xs text-slate-400 sm:h-28 sm:w-28">
+                      No Image
+                    </div>
+                  )}
                 </div>
 
                 <h3 className="text-xl font-bold">{member.name}</h3>
@@ -72,11 +110,17 @@ export default function Team({ title, roleLabel, members, theme, teamText }) {
             </div>
 
             <div className="mb-5 flex flex-col items-center text-center">
-              <img
-                src={selectedMember.image}
-                alt={selectedMember.name}
-                className="mb-4 h-28 w-28 rounded-full border border-cyan-500/30 object-cover shadow-[0_0_20px_#22d3ee]"
-              />
+              {selectedMember.image ? (
+                <img
+                  src={selectedMember.image}
+                  alt={selectedMember.name}
+                  className="mb-4 h-28 w-28 rounded-full border border-cyan-500/30 object-cover shadow-[0_0_20px_#22d3ee]"
+                />
+              ) : (
+                <div className="mb-4 flex h-28 w-28 items-center justify-center rounded-full border border-cyan-500/30 bg-slate-800 text-xs text-slate-400 shadow-[0_0_20px_#22d3ee]">
+                  No Image
+                </div>
+              )}
 
               <h2 className="text-2xl font-bold">{selectedMember.name}</h2>
               <p className="mt-2 text-cyan-400">
@@ -98,7 +142,7 @@ export default function Team({ title, roleLabel, members, theme, teamText }) {
                 {teamText.skills}
               </h3>
               <div className="flex flex-wrap gap-2">
-                {selectedMember.skills.map((skill, index) => (
+                {(selectedMember.skills || []).map((skill, index) => (
                   <span
                     key={index}
                     className="rounded-full border border-cyan-500/30 px-3 py-1 text-xs sm:text-sm"
