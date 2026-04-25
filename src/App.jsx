@@ -11,6 +11,10 @@ import Settings from "./pages/admin/Settings";
 import HeroSlidesAdmin from "./pages/admin/HeroSlidesAdmin";
 import ProtectedRoute from "./routes/ProtectedRoute";
 
+
+import GalleryAdmin from "./pages/admin/GalleryAdmin";
+
+
 function App() {
   return (
     <BrowserRouter>
@@ -29,6 +33,9 @@ function App() {
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />
+<Route path="/admin/gallery" element={<GalleryAdmin />} />
+
+
       </Routes>
     </BrowserRouter>
   );

@@ -154,7 +154,16 @@ export default function Dashboard() {
 
 
 
-
+<Link
+  to="/admin/gallery"
+  className="rounded-3xl border border-cyan-500/20 bg-slate-900 p-6 transition hover:-translate-y-1 hover:border-cyan-400/50 hover:shadow-[0_0_30px_rgba(34,211,238,0.12)]"
+>
+  <div className="mb-4 text-4xl">🖼️</div>
+  <h2 className="text-2xl font-bold text-cyan-400">Gallery</h2>
+  <p className="mt-2 text-slate-300">
+    Add, edit, delete and reorder gallery images.
+  </p>
+</Link>
 
 
 

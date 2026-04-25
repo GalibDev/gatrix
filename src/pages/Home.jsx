@@ -356,6 +356,12 @@ export default function Home() {
   const [achievements, setAchievements] = useState([]);
   const [siteLogo, setSiteLogo] = useState(logo);
 
+
+const [galleryItems, setGalleryItems] = useState([]);
+
+
+
+
   const [heroSlides, setHeroSlides] = useState([]);
   const [heroSettings, setHeroSettings] = useState({
     slide_interval: 5000,
@@ -366,7 +372,42 @@ export default function Home() {
     fetchAchievements();
     fetchSiteSettings();
     fetchHeroData();
+    fetchGalleryImages();
   }, []);
+
+
+
+//function added
+async function fetchGalleryImages() {
+  const { data, error } = await supabase
+    .from("gallery_images")
+    .select("*")
+    .order("sort_order", { ascending: true })
+    .order("created_at", { ascending: false });
+
+  if (!error && data) {
+    setGalleryItems(
+      data.map((item) => ({
+        id: item.id,
+        title: item.title,
+        src: item.image_url,
+        image_url: item.image_url,
+      }))
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
   async function fetchHeroData() {
     const { data: slides, error: slideError } = await supabase
@@ -542,7 +583,15 @@ export default function Home() {
         theme={theme}
       />
 
-      <Gallery title={t.gallery.title} images={galleryImages} theme={theme} />
+      
+
+<Gallery
+  title={t.gallery.title}
+  images={galleryItems.length > 0 ? galleryItems : galleryImages}
+  theme={theme}
+/>
+
+
 
       <Achievements
         title={t.achievements.title}
