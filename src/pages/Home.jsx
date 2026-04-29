@@ -9,10 +9,12 @@ import Achievements from "../components/Achievements";
 import Contact from "../components/Contact";
 import Footer from "../components/Footer";
 import Loader from "../components/Loader";
-
+import BirthdayPopup from "../components/BirthdayPopup";
 import logo from "../assets/logo.png";
 import { supabase } from "../lib/supabase";
 
+
+import NoticeBar from "../components/NoticeBar";
 import member1 from "../assets/member1.jpeg";
 import member2 from "../assets/member2.jpeg";
 import member3 from "../assets/member3.jpeg";
@@ -30,6 +32,13 @@ import gallery3 from "../assets/gallery3.jpg";
 import gallery4 from "../assets/gallery4.jpg";
 import gallery5 from "../assets/gallery5.jpg";
 import gallery6 from "../assets/gallery6.jpg";
+import AIAssistant from "../components/AIAssistant";
+
+
+
+
+
+
 
 const heroImages = [group1, group2, group3];
 
@@ -346,7 +355,11 @@ function CounterCard({ value, label, theme }) {
   );
 }
 
-export default function Home() {
+export default function Home()
+
+
+
+{
   const [theme, setTheme] = useState("dark");
   const [language, setLanguage] = useState("en");
   const [filter, setFilter] = useState("all");
@@ -359,7 +372,7 @@ export default function Home() {
 
 const [galleryItems, setGalleryItems] = useState([]);
 
-
+const [heroContent, setHeroContent] = useState(null);
 
 
   const [heroSlides, setHeroSlides] = useState([]);
@@ -373,6 +386,8 @@ const [galleryItems, setGalleryItems] = useState([]);
     fetchSiteSettings();
     fetchHeroData();
     fetchGalleryImages();
+    
+    fetchHeroContent();
   }, []);
 
 
@@ -396,6 +411,30 @@ async function fetchGalleryImages() {
     );
   }
 }
+
+
+
+
+
+
+//function2
+
+
+async function fetchHeroContent() {
+  const { data, error } = await supabase
+    .from("hero_content")
+    .select("*")
+    .eq("id", 1)
+    .single();
+
+  if (!error && data) {
+    setHeroContent(data);
+  }
+}
+
+
+
+
 
 
 
@@ -520,6 +559,39 @@ async function fetchGalleryImages() {
 
   const t = content[language];
 
+
+const dynamicHero = heroContent
+  ? language === "en"
+    ? {
+        title: heroContent.title_en || t.hero.title,
+        subtitle: heroContent.subtitle_en || t.hero.subtitle,
+        badge: heroContent.badge_en || t.hero.badge,
+        btn: heroContent.btn_en || t.hero.btn,
+        typing:
+          heroContent.typing_en && heroContent.typing_en.length > 0
+            ? heroContent.typing_en
+            : t.hero.typing,
+      }
+    : {
+        title: heroContent.title_bn || t.hero.title,
+        subtitle: heroContent.subtitle_bn || t.hero.subtitle,
+        badge: heroContent.badge_bn || t.hero.badge,
+        btn: heroContent.btn_bn || t.hero.btn,
+        typing:
+          heroContent.typing_bn && heroContent.typing_bn.length > 0
+            ? heroContent.typing_bn
+            : t.hero.typing,
+      }
+  : t.hero;
+
+
+
+
+
+
+
+
+
   const filteredProjects =
     filter === "all"
       ? projectsData
@@ -533,6 +605,26 @@ async function fetchGalleryImages() {
           : "bg-slate-100 text-slate-900"
       }`}
     >
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<NoticeBar language={language} />
       <Navbar
         nav={t.nav}
         theme={theme}
@@ -544,12 +636,14 @@ async function fetchGalleryImages() {
       />
 
       <Hero
-        hero={t.hero}
-        theme={theme}
-        heroImages={heroSlides.length > 0 ? heroSlides : heroImages}
-        slideInterval={heroSettings.slide_interval}
-        showArrows={heroSettings.show_arrows}
-      />
+  hero={dynamicHero}
+  theme={theme}
+  heroImages={heroSlides.length > 0 ? heroSlides : heroImages}
+  slideInterval={heroSettings.slide_interval}
+  showArrows={heroSettings.show_arrows}
+/>
+
+
 
       <About about={t.about} theme={theme} />
 
@@ -601,6 +695,9 @@ async function fetchGalleryImages() {
 
       <Contact contact={t.contact} theme={theme} />
       <Footer footer={t.footer} theme={theme} />
+<AIAssistant language={language} theme={theme} />
+<BirthdayPopup />
+
     </div>
   );
 }

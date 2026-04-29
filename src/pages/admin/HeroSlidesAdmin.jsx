@@ -2,16 +2,29 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "../../lib/supabase";
 
+const initialEditForm = {
+  title: "",
+  sort_order: 0,
+  image_url: "",
+  image_file: null,
+  image_preview: "",
+};
+
 export default function HeroSlidesAdmin() {
   const [slides, setSlides] = useState([]);
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState("");
   const [title, setTitle] = useState("");
   const [sortOrder, setSortOrder] = useState(0);
+
+  const [editingId, setEditingId] = useState(null);
+  const [editForm, setEditForm] = useState(initialEditForm);
+
   const [settings, setSettings] = useState({
     slide_interval: 5000,
     show_arrows: true,
   });
+
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -51,49 +64,68 @@ export default function HeroSlidesAdmin() {
     });
   }
 
-  function handleFile(e) {
-    const selected = e.target.files?.[0];
-    if (!selected) return;
+  function validateImage(selected) {
+    if (!selected) return false;
 
     if (!selected.type.startsWith("image/")) {
       alert("Please select image file");
-      return;
+      return false;
     }
+
+    return true;
+  }
+
+  function handleFile(e) {
+    const selected = e.target.files?.[0];
+    if (!validateImage(selected)) return;
 
     setFile(selected);
     setPreview(URL.createObjectURL(selected));
   }
 
-  async function uploadImage() {
-    if (!file) {
-      alert("Please select an image");
-      return null;
-    }
+  function handleEditFile(e) {
+    const selected = e.target.files?.[0];
+    if (!validateImage(selected)) return;
 
-    const ext = file.name.split(".").pop();
-    const fileName = `hero-${Date.now()}.${ext}`;
+    setEditForm((prev) => ({
+      ...prev,
+      image_file: selected,
+      image_preview: URL.createObjectURL(selected),
+    }));
+  }
+
+  async function uploadImage(imageFile) {
+    if (!imageFile) return null;
+
+    const ext = imageFile.name.split(".").pop();
+    const fileName = `hero-${Date.now()}-${Math.random()
+      .toString(36)
+      .substring(2)}.${ext}`;
 
     const { error } = await supabase.storage
       .from("hero-images")
-      .upload(fileName, file);
+      .upload(fileName, imageFile);
 
     if (error) {
       alert(error.message);
       return null;
     }
 
-    const { data } = supabase.storage
-      .from("hero-images")
-      .getPublicUrl(fileName);
-
+    const { data } = supabase.storage.from("hero-images").getPublicUrl(fileName);
     return data.publicUrl;
   }
 
   async function handleAddSlide(e) {
     e.preventDefault();
+
+    if (!file) {
+      alert("Please select an image");
+      return;
+    }
+
     setLoading(true);
 
-    const imageUrl = await uploadImage();
+    const imageUrl = await uploadImage(file);
 
     if (!imageUrl) {
       setLoading(false);
@@ -122,25 +154,63 @@ export default function HeroSlidesAdmin() {
     fetchSlides();
   }
 
-  async function handleDelete(id) {
-    const ok = window.confirm("Delete this slide?");
-    if (!ok) return;
+  function startEdit(slide) {
+    setEditingId(slide.id);
+    setEditForm({
+      title: slide.title || "",
+      sort_order: slide.sort_order || 0,
+      image_url: slide.image_url || "",
+      image_file: null,
+      image_preview: "",
+    });
 
-    const { error } = await supabase.from("hero_slides").delete().eq("id", id);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function cancelEdit() {
+    setEditingId(null);
+    setEditForm(initialEditForm);
+  }
+
+  async function handleUpdateSlide(id) {
+    setLoading(true);
+
+    let imageUrl = editForm.image_url;
+
+    if (editForm.image_file) {
+      imageUrl = await uploadImage(editForm.image_file);
+    }
+
+    if (!imageUrl) {
+      setLoading(false);
+      return;
+    }
+
+    const { error } = await supabase
+      .from("hero_slides")
+      .update({
+        title: editForm.title,
+        sort_order: Number(editForm.sort_order) || 0,
+        image_url: imageUrl,
+      })
+      .eq("id", id);
+
+    setLoading(false);
 
     if (error) {
       alert(error.message);
       return;
     }
 
+    cancelEdit();
     fetchSlides();
   }
 
-  async function handleUpdateSort(id, value) {
-    const { error } = await supabase
-      .from("hero_slides")
-      .update({ sort_order: Number(value) || 0 })
-      .eq("id", id);
+  async function handleDelete(id) {
+    const ok = window.confirm("Delete this slide?");
+    if (!ok) return;
+
+    const { error } = await supabase.from("hero_slides").delete().eq("id", id);
 
     if (error) {
       alert(error.message);
@@ -175,11 +245,9 @@ export default function HeroSlidesAdmin() {
       <div className="mx-auto max-w-7xl">
         <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <h1 className="text-4xl font-bold text-cyan-400">
-              Hero Slider
-            </h1>
+            <h1 className="text-4xl font-bold text-cyan-400">Hero Slider</h1>
             <p className="mt-2 text-slate-400">
-              Add hero images, control slide time, and arrow visibility.
+              Add, edit, replace, delete hero slides and control slider settings.
             </p>
           </div>
 
@@ -287,31 +355,98 @@ export default function HeroSlidesAdmin() {
               key={slide.id}
               className="rounded-3xl border border-cyan-500/20 bg-slate-900 p-5"
             >
-              <img
-                src={slide.image_url}
-                alt={slide.title || "Hero slide"}
-                className="mb-4 h-64 w-full rounded-2xl object-cover object-top"
-              />
+              {editingId === slide.id ? (
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <img
+                    src={editForm.image_preview || editForm.image_url}
+                    alt={editForm.title || "Hero slide"}
+                    className="h-64 w-full rounded-2xl object-cover object-top md:col-span-2"
+                  />
 
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                <input
-                  defaultValue={slide.sort_order}
-                  type="number"
-                  onBlur={(e) => handleUpdateSort(slide.id, e.target.value)}
-                  className="rounded-xl border border-slate-700 bg-slate-950 px-4 py-3"
-                />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleEditFile}
+                    className="rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 md:col-span-2"
+                  />
 
-                <div className="text-slate-300 md:col-span-1">
-                  {slide.title || "No title"}
+                  <input
+                    value={editForm.sort_order}
+                    onChange={(e) =>
+                      setEditForm({
+                        ...editForm,
+                        sort_order: e.target.value,
+                      })
+                    }
+                    type="number"
+                    placeholder="Sort order"
+                    className="rounded-xl border border-slate-700 bg-slate-950 px-4 py-3"
+                  />
+
+                  <input
+                    value={editForm.title}
+                    onChange={(e) =>
+                      setEditForm({
+                        ...editForm,
+                        title: e.target.value,
+                      })
+                    }
+                    placeholder="Image title optional"
+                    className="rounded-xl border border-slate-700 bg-slate-950 px-4 py-3"
+                  />
+
+                  <div className="flex flex-wrap gap-3 md:col-span-2">
+                    <button
+                      type="button"
+                      onClick={() => handleUpdateSlide(slide.id)}
+                      disabled={loading}
+                      className="rounded-xl bg-emerald-500 px-5 py-3 font-bold text-white disabled:opacity-60"
+                    >
+                      {loading ? "Saving..." : "Save"}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={cancelEdit}
+                      className="rounded-xl bg-slate-700 px-5 py-3 font-bold text-white"
+                    >
+                      Cancel
+                    </button>
+                  </div>
                 </div>
+              ) : (
+                <>
+                  <img
+                    src={slide.image_url}
+                    alt={slide.title || "Hero slide"}
+                    className="mb-4 h-64 w-full rounded-2xl object-cover object-top"
+                  />
 
-                <button
-                  onClick={() => handleDelete(slide.id)}
-                  className="rounded-xl bg-rose-500 px-5 py-3 font-bold text-white"
-                >
-                  Delete
-                </button>
-              </div>
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-4 md:items-center">
+                    <div className="rounded-xl border border-slate-700 bg-slate-950 px-4 py-3">
+                      Order: {slide.sort_order || 0}
+                    </div>
+
+                    <div className="text-slate-300 md:col-span-1">
+                      {slide.title || "No title"}
+                    </div>
+
+                    <button
+                      onClick={() => startEdit(slide)}
+                      className="rounded-xl bg-amber-400 px-5 py-3 font-bold text-slate-950"
+                    >
+                      Edit
+                    </button>
+
+                    <button
+                      onClick={() => handleDelete(slide.id)}
+                      className="rounded-xl bg-rose-500 px-5 py-3 font-bold text-white"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           ))}
 

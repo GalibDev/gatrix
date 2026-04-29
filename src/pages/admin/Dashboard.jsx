@@ -171,6 +171,51 @@ export default function Dashboard() {
 
 
 
+<Link
+  to="/admin/hero-content"
+  className="rounded-3xl border border-cyan-500/20 bg-slate-900 p-6 transition hover:-translate-y-1 hover:border-cyan-400/50 hover:shadow-[0_0_30px_rgba(34,211,238,0.12)]"
+>
+  <div className="mb-4 text-4xl">✍️</div>
+  <h2 className="text-2xl font-bold text-cyan-400">Hero Content</h2>
+  <p className="mt-2 text-slate-300">
+    Edit hero badge, title, typing text, subtitle, and buttons.
+  </p>
+</Link>
+
+
+
+
+
+
+
+{/* 28april chatbot */}
+
+<Link
+  to="/admin/ai-faqs"
+  className="rounded-3xl border border-cyan-500/20 bg-slate-900 p-6 transition hover:-translate-y-1 hover:border-cyan-400/50 hover:shadow-[0_0_30px_rgba(34,211,238,0.12)]"
+>
+  <div className="mb-4 text-4xl">🤖</div>
+  <h2 className="text-2xl font-bold text-cyan-400">AI Assistant FAQ</h2>
+  <p className="mt-2 text-slate-300">
+    Add, edit, delete assistant questions and answers.
+  </p>
+</Link>
+
+
+
+
+
+
+<Link
+  to="/admin/birthday"
+  className="rounded-3xl border border-cyan-500/20 bg-slate-900 p-6 transition hover:-translate-y-1 hover:border-pink-400/50 hover:shadow-[0_0_30px_rgba(255,0,150,0.12)]"
+>
+  <div className="mb-4 text-4xl">🎂</div>
+  <h2 className="text-2xl font-bold text-pink-400">Birthday Settings</h2>
+  <p className="mt-2 text-slate-300">
+    Manage birthday celebration popup and photo.
+  </p>
+</Link>
 
 
 
@@ -179,6 +224,18 @@ export default function Dashboard() {
 
 
 
+
+
+<Link
+  to="/admin/notice"
+  className="rounded-3xl border border-cyan-500/20 bg-slate-900 p-6 transition hover:-translate-y-1 hover:border-pink-400/50 hover:shadow-[0_0_30px_rgba(255,0,150,0.12)]"
+>
+  <div className="mb-4 text-4xl">📢</div>
+  <h2 className="text-2xl font-bold text-pink-400">Notice Settings</h2>
+  <p className="mt-2 text-slate-300">
+    Edit website top notice bar.
+  </p>
+</Link>
 
 
 

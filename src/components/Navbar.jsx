@@ -12,6 +12,16 @@ export default function Navbar({
 }) {
   const [open, setOpen] = useState(false);
 
+  function scrollToSection(sectionId) {
+    const section = document.getElementById(sectionId);
+
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    setOpen(false);
+  }
+
   const navItemClass = (section) =>
     `transition px-2 py-1 rounded-md ${
       activeSection === section
@@ -20,6 +30,9 @@ export default function Navbar({
         ? "text-white hover:text-cyan-400"
         : "text-slate-900 hover:text-cyan-500"
     }`;
+
+  const mobileNavClass =
+    "block w-full rounded-lg px-2 py-2 text-left hover:bg-cyan-500/10";
 
   return (
     <nav
@@ -30,7 +43,11 @@ export default function Navbar({
       }`}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6">
-        <a href="#home" className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={() => scrollToSection("home")}
+          className="flex items-center gap-3"
+        >
           <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-xl border border-cyan-500/30 bg-slate-950 sm:h-16 sm:w-16">
             <img
               src={logo}
@@ -42,16 +59,36 @@ export default function Navbar({
           <span className="logo-font text-xl font-bold text-cyan-400 sm:text-3xl">
             GATRIX
           </span>
-        </a>
+        </button>
 
         <div className="hidden items-center gap-4 lg:flex">
-          <a href="#home" className={navItemClass("home")}>{nav.home}</a>
-          <a href="#about" className={navItemClass("about")}>{nav.about}</a>
-          <a href="#team" className={navItemClass("team")}>{nav.team}</a>
-          <a href="#projects" className={navItemClass("projects")}>{nav.projects}</a>
-          <a href="#gallery" className={navItemClass("gallery")}>{nav.gallery}</a>
-          <a href="#achievements" className={navItemClass("achievements")}>{nav.achievements}</a>
-          <a href="#contact" className={navItemClass("contact")}>{nav.contact}</a>
+          <button type="button" onClick={() => scrollToSection("home")} className={navItemClass("home")}>
+            {nav.home}
+          </button>
+
+          <button type="button" onClick={() => scrollToSection("about")} className={navItemClass("about")}>
+            {nav.about}
+          </button>
+
+          <button type="button" onClick={() => scrollToSection("team")} className={navItemClass("team")}>
+            {nav.team}
+          </button>
+
+          <button type="button" onClick={() => scrollToSection("projects")} className={navItemClass("projects")}>
+            {nav.projects}
+          </button>
+
+          <button type="button" onClick={() => scrollToSection("gallery")} className={navItemClass("gallery")}>
+            {nav.gallery}
+          </button>
+
+          <button type="button" onClick={() => scrollToSection("achievements")} className={navItemClass("achievements")}>
+            {nav.achievements}
+          </button>
+
+          <button type="button" onClick={() => scrollToSection("contact")} className={navItemClass("contact")}>
+            {nav.contact}
+          </button>
 
           <Link
             to="/admin/login"
@@ -64,6 +101,7 @@ export default function Navbar({
         <div className="flex items-center gap-2 sm:gap-3">
           <div className="hidden rounded-full border border-cyan-500/30 p-1 md:flex">
             <button
+              type="button"
               onClick={() => setLanguage("en")}
               className={`rounded-full px-3 py-1 text-sm ${
                 language === "en"
@@ -77,6 +115,7 @@ export default function Navbar({
             </button>
 
             <button
+              type="button"
               onClick={() => setLanguage("bn")}
               className={`rounded-full px-3 py-1 text-sm ${
                 language === "bn"
@@ -91,6 +130,7 @@ export default function Navbar({
           </div>
 
           <button
+            type="button"
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             className="rounded-full border border-cyan-500/30 px-3 py-2 text-sm transition hover:bg-cyan-500/10"
           >
@@ -98,6 +138,7 @@ export default function Navbar({
           </button>
 
           <button
+            type="button"
             onClick={() => setOpen(!open)}
             className="rounded-md border border-cyan-500/30 px-3 py-2 lg:hidden"
           >
@@ -112,13 +153,33 @@ export default function Navbar({
             theme === "dark" ? "bg-slate-950/95" : "bg-white/95"
           }`}
         >
-          <a href="#home" onClick={() => setOpen(false)} className="block rounded-lg px-2 py-2 hover:bg-cyan-500/10">{nav.home}</a>
-          <a href="#about" onClick={() => setOpen(false)} className="block rounded-lg px-2 py-2 hover:bg-cyan-500/10">{nav.about}</a>
-          <a href="#team" onClick={() => setOpen(false)} className="block rounded-lg px-2 py-2 hover:bg-cyan-500/10">{nav.team}</a>
-          <a href="#projects" onClick={() => setOpen(false)} className="block rounded-lg px-2 py-2 hover:bg-cyan-500/10">{nav.projects}</a>
-          <a href="#gallery" onClick={() => setOpen(false)} className="block rounded-lg px-2 py-2 hover:bg-cyan-500/10">{nav.gallery}</a>
-          <a href="#achievements" onClick={() => setOpen(false)} className="block rounded-lg px-2 py-2 hover:bg-cyan-500/10">{nav.achievements}</a>
-          <a href="#contact" onClick={() => setOpen(false)} className="block rounded-lg px-2 py-2 hover:bg-cyan-500/10">{nav.contact}</a>
+          <button type="button" onClick={() => scrollToSection("home")} className={mobileNavClass}>
+            {nav.home}
+          </button>
+
+          <button type="button" onClick={() => scrollToSection("about")} className={mobileNavClass}>
+            {nav.about}
+          </button>
+
+          <button type="button" onClick={() => scrollToSection("team")} className={mobileNavClass}>
+            {nav.team}
+          </button>
+
+          <button type="button" onClick={() => scrollToSection("projects")} className={mobileNavClass}>
+            {nav.projects}
+          </button>
+
+          <button type="button" onClick={() => scrollToSection("gallery")} className={mobileNavClass}>
+            {nav.gallery}
+          </button>
+
+          <button type="button" onClick={() => scrollToSection("achievements")} className={mobileNavClass}>
+            {nav.achievements}
+          </button>
+
+          <button type="button" onClick={() => scrollToSection("contact")} className={mobileNavClass}>
+            {nav.contact}
+          </button>
 
           <Link
             to="/admin/login"
@@ -130,12 +191,15 @@ export default function Navbar({
 
           <div className="flex gap-2 pt-2">
             <button
+              type="button"
               onClick={() => setLanguage("en")}
               className="rounded-full border border-cyan-500/30 px-3 py-1 text-sm"
             >
               EN
             </button>
+
             <button
+              type="button"
               onClick={() => setLanguage("bn")}
               className="rounded-full border border-cyan-500/30 px-3 py-1 text-sm"
             >
