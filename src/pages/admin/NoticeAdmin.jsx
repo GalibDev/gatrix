@@ -8,6 +8,7 @@ export default function NoticeAdmin() {
     text_bn: "",
     link: "",
     is_active: true,
+    sound_enabled: true,
   });
 
   const [loading, setLoading] = useState(false);
@@ -99,6 +100,19 @@ export default function NoticeAdmin() {
             />
             Active
           </label>
+
+
+<label className="flex gap-2">
+  <input
+    type="checkbox"
+    name="sound_enabled"
+    checked={form.sound_enabled}
+    onChange={handleChange}
+  />
+  Enable Sound 🔊
+</label>
+
+
 
           <button className="bg-cyan-400 text-black px-5 py-2 rounded">
             {loading ? "Saving..." : "Save Notice"}

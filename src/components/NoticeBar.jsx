@@ -4,29 +4,41 @@ import { supabase } from "../lib/supabase";
 export default function NoticeBar({ language = "en" }) {
   const [notice, setNotice] = useState(null);
   const [closed, setClosed] = useState(false);
+  const [soundPlayed, setSoundPlayed] = useState(false);
 
   useEffect(() => {
     fetchNotice();
   }, []);
 
   async function fetchNotice() {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("notice_settings")
       .select("*")
       .eq("id", 1)
       .single();
 
-    if (data && data.is_active) setNotice(data);
+    if (error) return;
+
+    if (data && data.is_active) {
+      setNotice(data);
+
+      if (data.sound_enabled && !soundPlayed) {
+        const audio = new Audio("/sounds/notify.mp3");
+        audio.volume = 0.45;
+        audio.play().catch(() => {});
+        setSoundPlayed(true);
+      }
+    }
   }
 
   if (!notice || closed) return null;
 
   const text =
     language === "bn"
-      ? notice.text_bn || notice.text_en
-      : notice.text_en || notice.text_bn;
+      ? notice.text_bn?.trim() || notice.text_en
+      : notice.text_en?.trim() || notice.text_bn;
 
-  const content = (
+  const marqueeText = (
     <span className="mx-10 inline-block">
       {text} &nbsp; ✨ &nbsp; {text} &nbsp; 💖 &nbsp; {text}
     </span>
@@ -38,10 +50,10 @@ export default function NoticeBar({ language = "en" }) {
         <div className="notice-marquee whitespace-nowrap text-sm font-semibold tracking-wide">
           {notice.link ? (
             <a href={notice.link} target="_blank" rel="noreferrer">
-              {content}
+              {marqueeText}
             </a>
           ) : (
-            content
+            marqueeText
           )}
         </div>
 
