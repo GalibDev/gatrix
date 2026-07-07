@@ -30,16 +30,14 @@ export default function AIAssistant({ language = "en" }) {
   });
 
   const chatRef = useRef(null);
-  const typingSoundRef = useRef(null);
+  const audioContextRef = useRef(null);
   const sendSoundRef = useRef(null);
   const notifySoundRef = useRef(null);
 
   useEffect(() => {
-    typingSoundRef.current = new Audio("/sounds/typing.mp3");
     sendSoundRef.current = new Audio("/sounds/notify.mp3");
     notifySoundRef.current = new Audio("/sounds/notify.mp3");
 
-    typingSoundRef.current.volume = 0.28;
     sendSoundRef.current.volume = 0.35;
     notifySoundRef.current.volume = 0.65;
     sendSoundRef.current.playbackRate = 1.25;
@@ -48,10 +46,10 @@ export default function AIAssistant({ language = "en" }) {
   useEffect(() => {
     if (!typing) return;
 
-    playSound(typingSoundRef.current);
+    playTypingPulse();
     const typingTimer = setInterval(() => {
-      playSound(typingSoundRef.current);
-    }, 900);
+      playTypingPulse();
+    }, 650);
 
     return () => clearInterval(typingTimer);
   }, [typing]);
@@ -86,6 +84,46 @@ export default function AIAssistant({ language = "en" }) {
 
     audio.currentTime = 0;
     audio.play().catch(() => {});
+  }
+
+  function getAudioContext() {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return null;
+
+    if (!audioContextRef.current) {
+      audioContextRef.current = new AudioContextClass();
+    }
+
+    return audioContextRef.current;
+  }
+
+  function playTypingPulse() {
+    const audioContext = getAudioContext();
+    if (!audioContext) return;
+
+    audioContext.resume?.().catch(() => {});
+
+    const now = audioContext.currentTime;
+    const gain = audioContext.createGain();
+    const filter = audioContext.createBiquadFilter();
+    const oscillator = audioContext.createOscillator();
+
+    oscillator.type = "sine";
+    oscillator.frequency.setValueAtTime(520, now);
+    oscillator.frequency.exponentialRampToValueAtTime(360, now + 0.055);
+
+    filter.type = "lowpass";
+    filter.frequency.setValueAtTime(1100, now);
+
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.045, now + 0.008);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.07);
+
+    oscillator.connect(filter);
+    filter.connect(gain);
+    gain.connect(audioContext.destination);
+    oscillator.start(now);
+    oscillator.stop(now + 0.075);
   }
 
   async function fetchFaqs() {
