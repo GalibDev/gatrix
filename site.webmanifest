@@ -1,0 +1,16 @@
+{
+  "name": "GATRIX Robotics Group",
+  "short_name": "GATRIX",
+  "description": "Robotics, automation, IoT, and innovation projects by GATRIX.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#020617",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
