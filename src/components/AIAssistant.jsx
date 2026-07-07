@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "../lib/supabase";
-import aiGirl from "../assets/ai-girl.png";
+import aiGirl from "../assets/ai-girl.PNG";
 
 export default function AIAssistant({ language = "en" }) {
   const storageKey = `evana_chat_${language}`;
@@ -22,7 +22,11 @@ export default function AIAssistant({ language = "en" }) {
   const [autoTip, setAutoTip] = useState(false);
   const [messages, setMessages] = useState(() => {
     const saved = localStorage.getItem(storageKey);
-    return saved ? JSON.parse(saved) : [{ from: "bot", text: welcomeText }];
+    try {
+      return saved ? JSON.parse(saved) : [{ from: "bot", text: welcomeText }];
+    } catch {
+      return [{ from: "bot", text: welcomeText }];
+    }
   });
 
   const chatRef = useRef(null);
@@ -53,6 +57,8 @@ export default function AIAssistant({ language = "en" }) {
   }, [messages, typing]);
 
   async function fetchFaqs() {
+    if (!supabase) return;
+
     const { data, error } = await supabase
       .from("ai_faqs")
       .select("*")
@@ -142,22 +148,74 @@ export default function AIAssistant({ language = "en" }) {
       : bestMatch.answer_en || bestMatch.answer_bn;
   }
 
-  function sendQuestion(questionText) {
+  function shouldUseFaqFallback(question) {
+    const q = normalize(question);
+    return [
+      "gatrix",
+      "team",
+      "member",
+      "project",
+      "contact",
+      "robot",
+      "robotics",
+      "lfr",
+      "line follower",
+    ].some((keyword) => q.includes(keyword));
+  }
+
+  async function askEvana(question, nextMessages) {
+    if (!supabase) {
+      throw new Error("Supabase is not configured");
+    }
+
+    const { data, error } = await supabase.functions.invoke("evana-chat", {
+      body: {
+        question,
+        language,
+        messages: nextMessages.slice(-8),
+        faqs: faqs.slice(0, 30),
+      },
+    });
+
+    if (error) {
+      throw error;
+    }
+
+    if (!data?.answer) {
+      throw new Error("Empty Evana AI response");
+    }
+
+    return data.answer;
+  }
+
+  async function sendQuestion(questionText) {
     if (!questionText.trim() || typing) return;
 
     const userMessage = questionText.trim();
-    const botAnswer = findAnswer(userMessage);
+    const nextMessages = [...messages, { from: "user", text: userMessage }];
 
-    setMessages((prev) => [...prev, { from: "user", text: userMessage }]);
+    setMessages(nextMessages);
     setInput("");
     setTyping(true);
 
-    const delay = Math.min(Math.max(botAnswer.length * 18, 700), 1800);
-
-    setTimeout(() => {
+    try {
+      const botAnswer = await askEvana(userMessage, nextMessages);
       setTyping(false);
       setMessages((prev) => [...prev, { from: "bot", text: botAnswer }]);
-    }, delay);
+    } catch (error) {
+      console.error(error);
+      const fallbackAnswer = shouldUseFaqFallback(userMessage)
+        ? findAnswer(userMessage)
+        : language === "bn"
+        ? "দুঃখিত, Evana AI এখন একটু ব্যস্ত আছে 😅 একটু পরে আবার চেষ্টা করো।"
+        : "Sorry, Evana AI is a little busy right now 😅 Please try again in a bit.";
+      const delay = Math.min(Math.max(fallbackAnswer.length * 18, 700), 1800);
+
+      setTimeout(() => {
+        setTyping(false);
+        setMessages((prev) => [...prev, { from: "bot", text: fallbackAnswer }]);
+      }, delay);
+    }
   }
 
   function handleSend(e) {
