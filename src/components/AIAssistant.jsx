@@ -30,6 +30,31 @@ export default function AIAssistant({ language = "en" }) {
   });
 
   const chatRef = useRef(null);
+  const typingSoundRef = useRef(null);
+  const sendSoundRef = useRef(null);
+  const notifySoundRef = useRef(null);
+
+  useEffect(() => {
+    typingSoundRef.current = new Audio("/sounds/typing.mp3");
+    sendSoundRef.current = new Audio("/sounds/notify.mp3");
+    notifySoundRef.current = new Audio("/sounds/notify.mp3");
+
+    typingSoundRef.current.volume = 0.28;
+    sendSoundRef.current.volume = 0.35;
+    notifySoundRef.current.volume = 0.65;
+    sendSoundRef.current.playbackRate = 1.25;
+  }, []);
+
+  useEffect(() => {
+    if (!typing) return;
+
+    playSound(typingSoundRef.current);
+    const typingTimer = setInterval(() => {
+      playSound(typingSoundRef.current);
+    }, 900);
+
+    return () => clearInterval(typingTimer);
+  }, [typing]);
 
   useEffect(() => {
     fetchFaqs();
@@ -55,6 +80,13 @@ export default function AIAssistant({ language = "en" }) {
       behavior: "smooth",
     });
   }, [messages, typing]);
+
+  function playSound(audio) {
+    if (!audio) return;
+
+    audio.currentTime = 0;
+    audio.play().catch(() => {});
+  }
 
   async function fetchFaqs() {
     if (!supabase) return;
@@ -194,6 +226,7 @@ export default function AIAssistant({ language = "en" }) {
     const userMessage = questionText.trim();
     const nextMessages = [...messages, { from: "user", text: userMessage }];
 
+    playSound(sendSoundRef.current);
     setMessages(nextMessages);
     setInput("");
     setTyping(true);
@@ -201,6 +234,7 @@ export default function AIAssistant({ language = "en" }) {
     try {
       const botAnswer = await askEvana(userMessage, nextMessages);
       setTyping(false);
+      playSound(notifySoundRef.current);
       setMessages((prev) => [...prev, { from: "bot", text: botAnswer }]);
     } catch (error) {
       console.error(error);
@@ -213,6 +247,7 @@ export default function AIAssistant({ language = "en" }) {
 
       setTimeout(() => {
         setTyping(false);
+        playSound(notifySoundRef.current);
         setMessages((prev) => [...prev, { from: "bot", text: fallbackAnswer }]);
       }, delay);
     }
