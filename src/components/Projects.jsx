@@ -254,6 +254,7 @@ export default function Projects({
           <div className="max-w-2xl w-full bg-slate-900 p-6 rounded-2xl text-white">
             <img
               src={selected.image_url}
+              alt={selected.title}
               className="mb-4 rounded-xl w-full h-60 object-cover"
             />
             <h2 className="text-2xl font-bold">{selected.title}</h2>

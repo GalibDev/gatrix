@@ -20,19 +20,24 @@ export default function Footer({ footer, theme }) {
 
         <div className="flex items-center gap-4 text-xl">
           <a
-            href="#"
+            href="https://facebook.com/gatrix"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="GATRIX on Facebook"
             className="rounded-full border border-cyan-500/30 p-3 transition hover:bg-cyan-500/10 hover:text-cyan-400"
           >
             <FaFacebookF />
           </a>
           <a
             href="#"
+            aria-label="GATRIX on GitHub"
             className="rounded-full border border-cyan-500/30 p-3 transition hover:bg-cyan-500/10 hover:text-cyan-400"
           >
             <FaGithub />
           </a>
           <a
             href="#"
+            aria-label="GATRIX on YouTube"
             className="rounded-full border border-cyan-500/30 p-3 transition hover:bg-cyan-500/10 hover:text-cyan-400"
           >
             <FaYoutube />

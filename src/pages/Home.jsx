@@ -55,7 +55,7 @@ const content = {
     },
     hero: {
       title: "Welcome to GATRIX",
-      subtitle: "We build robotics and innovative solutions for the future.",
+      subtitle: "GATRIX is a robotics group in Bangladesh building robots, automation systems, IoT projects, and innovative solutions for the future.",
       btn: "Explore Projects",
       badge: "Robotics • Innovation • Future",
       typing: [
@@ -66,7 +66,7 @@ const content = {
     },
     about: {
       title: "About GATRIX",
-      desc: "GATRIX is a robotics group where we create innovative projects using technology, automation, and teamwork.",
+      desc: "GATRIX Robotics Group is a student-led technology team in Bangladesh. We create robotics, automation, IoT, and electronics projects using teamwork, research, programming, hardware design, and practical problem solving.",
     },
     team: {
       title: "Our Team",

@@ -149,7 +149,7 @@ export default function Hero({
                 <img
                   key={imgIndex}
                   src={img}
-                  alt=""
+                  alt={`GATRIX robotics group project showcase ${imgIndex + 1}`}
                   className={`absolute inset-0 w-full h-full object-cover transition ${
                     imgIndex === currentImage
                       ? "opacity-100"
