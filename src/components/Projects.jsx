@@ -135,6 +135,8 @@ export default function Projects({
                 <img
                   src={project.image_url || "https://via.placeholder.com/300"}
                   alt={project.title}
+                  loading="lazy"
+                  decoding="async"
                   className="mb-4 h-44 w-full rounded-xl object-cover sm:h-48"
                 />
 
@@ -255,6 +257,7 @@ export default function Projects({
             <img
               src={selected.image_url}
               alt={selected.title}
+              decoding="async"
               className="mb-4 rounded-xl w-full h-60 object-cover"
             />
             <h2 className="text-2xl font-bold">{selected.title}</h2>

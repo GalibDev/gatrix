@@ -1,27 +1,35 @@
+import { lazy, Suspense } from "react";
 import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Home from "./pages/Home";
-import AdminLogin from "./pages/AdminLogin";
-import Dashboard from "./pages/admin/Dashboard";
-import Projects from "./pages/admin/Projects";
-import TeamAdmin from "./pages/admin/TeamAdmin";
-import Messages from "./pages/admin/Messages";
-import AchievementsAdmin from "./pages/admin/AchievementsAdmin";
-import Settings from "./pages/admin/Settings";
-import HeroSlidesAdmin from "./pages/admin/HeroSlidesAdmin";
-import GalleryAdmin from "./pages/admin/GalleryAdmin";
-import HeroContentAdmin from "./pages/admin/HeroContentAdmin";
-import AIFAQAdmin from "./pages/admin/AIFAQAdmin";
+const AdminLogin = lazy(() => import("./pages/AdminLogin"));
+const Dashboard = lazy(() => import("./pages/admin/Dashboard"));
+const Projects = lazy(() => import("./pages/admin/Projects"));
+const TeamAdmin = lazy(() => import("./pages/admin/TeamAdmin"));
+const Messages = lazy(() => import("./pages/admin/Messages"));
+const AchievementsAdmin = lazy(() => import("./pages/admin/AchievementsAdmin"));
+const Settings = lazy(() => import("./pages/admin/Settings"));
+const HeroSlidesAdmin = lazy(() => import("./pages/admin/HeroSlidesAdmin"));
+const GalleryAdmin = lazy(() => import("./pages/admin/GalleryAdmin"));
+const HeroContentAdmin = lazy(() => import("./pages/admin/HeroContentAdmin"));
+const AIFAQAdmin = lazy(() => import("./pages/admin/AIFAQAdmin"));
+const BirthdayAdmin = lazy(() => import("./pages/admin/BirthdayAdmin"));
+const NoticeAdmin = lazy(() => import("./pages/admin/NoticeAdmin"));
+const ProtectedRoute = lazy(() => import("./routes/ProtectedRoute"));
 
-import BirthdayAdmin from "./pages/admin/BirthdayAdmin";
-import NoticeAdmin from "./pages/admin/NoticeAdmin";
-
-import ProtectedRoute from "./routes/ProtectedRoute";
+function RouteFallback() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-slate-950 text-cyan-400">
+      Loading…
+    </div>
+  );
+}
 
 function App() {
   return (
     <HashRouter>
-      <Routes>
+      <Suspense fallback={<RouteFallback />}>
+        <Routes>
         {/* Public routes */}
         <Route path="/" element={<Home />} />
         <Route path="/admin/login" element={<AdminLogin />} />
@@ -51,7 +59,8 @@ function App() {
 <Route path="/admin/notice" element={<NoticeAdmin />} />
 
 
-      </Routes>
+        </Routes>
+      </Suspense>
     </HashRouter>
   );
 }

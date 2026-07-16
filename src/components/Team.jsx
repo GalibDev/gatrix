@@ -61,6 +61,8 @@ export default function Team({ title, roleLabel, members = [], theme, teamText }
                     <img
                       src={member.image}
                       alt={member.name}
+                      loading="lazy"
+                      decoding="async"
                       className="mb-4 h-24 w-24 rounded-full border border-cyan-500/30 object-cover transition duration-300 group-hover:scale-110 sm:h-28 sm:w-28"
                     />
                   ) : (

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import About from "../components/About";
@@ -8,8 +8,6 @@ import Gallery from "../components/Gallery";
 import Achievements from "../components/Achievements";
 import Contact from "../components/Contact";
 import Footer from "../components/Footer";
-import Loader from "../components/Loader";
-import BirthdayPopup from "../components/BirthdayPopup";
 import logo from "../assets/logo.png";
 import { supabase } from "../lib/supabase";
 
@@ -32,7 +30,8 @@ import gallery3 from "../assets/gallery3.jpg";
 import gallery4 from "../assets/gallery4.jpg";
 import gallery5 from "../assets/gallery5.jpg";
 import gallery6 from "../assets/gallery6.jpg";
-import AIAssistant from "../components/AIAssistant";
+const AIAssistant = lazy(() => import("../components/AIAssistant"));
+const BirthdayPopup = lazy(() => import("../components/BirthdayPopup"));
 
 
 
@@ -364,7 +363,6 @@ export default function Home()
   const [language, setLanguage] = useState("en");
   const [filter, setFilter] = useState("all");
   const [activeSection, setActiveSection] = useState("home");
-  const [loading, setLoading] = useState(true);
 
   const [achievements, setAchievements] = useState([]);
   const [siteLogo, setSiteLogo] = useState(logo);
@@ -545,18 +543,6 @@ async function fetchHeroContent() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 2800);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (loading) {
-    return <Loader />;
-  }
-
   const t = content[language];
 
 
@@ -695,8 +681,10 @@ const dynamicHero = heroContent
 
       <Contact contact={t.contact} theme={theme} />
       <Footer footer={t.footer} theme={theme} />
-<AIAssistant language={language} theme={theme} />
-<BirthdayPopup />
+      <Suspense fallback={null}>
+        <AIAssistant language={language} theme={theme} />
+        <BirthdayPopup />
+      </Suspense>
 
     </div>
   );

@@ -145,18 +145,16 @@ export default function Hero({
               onTouchEnd={handleTouchEnd}
               className="relative overflow-hidden rounded-[2rem]"
             >
-              {heroImages.map((img, imgIndex) => (
+              {(heroImages[currentImage] || heroImages[0]) && (
                 <img
-                  key={imgIndex}
-                  src={img}
-                  alt={`GATRIX robotics group project showcase ${imgIndex + 1}`}
-                  className={`absolute inset-0 w-full h-full object-cover transition ${
-                    imgIndex === currentImage
-                      ? "opacity-100"
-                      : "opacity-0"
-                  }`}
+                  key={currentImage}
+                  src={heroImages[currentImage] || heroImages[0]}
+                  alt={`GATRIX robotics group project showcase ${currentImage + 1}`}
+                  fetchPriority="high"
+                  decoding="async"
+                  className="absolute inset-0 h-full w-full object-cover"
                 />
-              ))}
+              )}
 
               <div className="aspect-[4/5] w-full"></div>
 

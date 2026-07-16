@@ -25,6 +25,8 @@ export default function Gallery({ title, images, theme }) {
                 <img
                   src={imageSrc}
                   alt={image.title}
+                  loading="lazy"
+                  decoding="async"
                   className="h-52 w-full object-cover sm:h-60 lg:h-64"
                 />
 
