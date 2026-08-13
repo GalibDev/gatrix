@@ -260,7 +260,7 @@ https://gatrix.xyz
 
 https://github.com/GalibDev
 
----
+----------
 
 <div align="center">
 
